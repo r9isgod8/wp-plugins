@@ -70,7 +70,6 @@ defined( 'ABSPATH' ) || exit;
 			<div class="wpr-field wpr-field-account">
 				<div class="wpr-flex wpr-flex--egal">
 					<div>
-						<span class="wpr-title3" style="color:red;">reg</span><br>
 						<span class="wpr-title3"><?php esc_html_e( 'License', 'rocket' ); ?></span>
 						<span class="wpr-infoAccount wpr-isValid" id="wpr-account-data"><?php echo esc_html( $data['customer_data']->licence_account ); ?></span><br>
 						<span class="wpr-title3"><?php esc_html_e( 'Expiration Date', 'rocket' ); ?></span>
@@ -146,12 +145,13 @@ defined( 'ABSPATH' ) || exit;
 					<?php endif; ?>
 
 					<?php
+					$opcache_enabled  = filter_var( ini_get( 'opcache.enable' ), FILTER_VALIDATE_BOOLEAN );
 					$restrict_api     = ini_get( 'opcache.restrict_api' );
 					$can_restrict_api = true;
 					if ( $restrict_api && strpos(__FILE__, $restrict_api) !== 0 ) {
-					    $can_restrict_api = false;
+						$can_restrict_api = false;
 					}
-					if ( function_exists( 'opcache_reset' ) && current_user_can( 'rocket_purge_opcache' ) && $can_restrict_api ) : ?>
+					if ( function_exists( 'opcache_reset' ) && $opcache_enabled && current_user_can( 'rocket_purge_opcache' ) && $can_restrict_api ) : ?>
 					<div class="wpr-field">
 						<h4 class="wpr-title3"><?php esc_html_e( 'Purge OPCache content', 'rocket' ); ?></h4>
 						<?php

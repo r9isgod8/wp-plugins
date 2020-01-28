@@ -198,9 +198,22 @@ class Page {
 	 * @return object
 	 */
 	private function get_customer_data() {
-  $customer_data->licence_account = 'Plus';
-  $customer_data->licence_expiration =date('Y-M-d', strtotime('+10 years'));
-  return $customer_data;
+		$customer_key   = defined( 'WP_ROCKET_KEY' ) ? WP_ROCKET_KEY : get_rocket_option( 'consumer_key', 'gplready' );
+		$customer_email = defined( 'WP_ROCKET_EMAIL' ) ? WP_ROCKET_EMAIL : get_rocket_option( 'consumer_email', 'full@gplready.com' );
+
+		$response = 200;
+
+		
+
+		$customer_data = json_decode( wp_remote_retrieve_body( $response ) );
+		$customer_data->licence_account = 'Infinite';
+		$customer_data->licence_expiration = 82222229222;
+		
+
+		$customer_data->class              = time() < $customer_data->licence_expiration ? 'wpr-isValid' : 'wpr-isValid';
+		$customer_data->licence_expiration = date_i18n( get_option( 'date_format' ), (int) $customer_data->licence_expiration );
+
+		return $customer_data;
 	}
 
 	/**
@@ -487,7 +500,7 @@ class Page {
 					'type'              => 'checkbox',
 					'label'             => __( 'Separate cache files for mobile devices', 'rocket' ),
 					// translators: %1$s = opening <a> tag, %2$s = closing </a> tag.
-					'description'       => sprintf( __( '%1$sMobile cache%2$s works safest with both options enabled. When in doubt, keep both.', 'rocket' ), '<a href="' . esc_url( $mobile_cache_beacon['url'] ) . '" data-beacon-article="' . esc_attr( $mobile_cache_beacon['id'] ) . '" target="_blank">', '</a>' ),
+					'description'       => sprintf( __( 'Most modern themes are responsive and should work without a separate cache. Enable this only if you have a dedicated mobile theme or plugin. %1$sMore info%2$s', 'rocket' ), '<a href="' . esc_url( $mobile_cache_beacon['url'] ) . '" data-beacon-article="' . esc_attr( $mobile_cache_beacon['id'] ) . '" target="_blank">', '</a>' ),
 					'container_class'   => [
 						rocket_is_mobile_plugin_active() ? 'wpr-isDisabled' : '',
 						'wpr-field--children',
