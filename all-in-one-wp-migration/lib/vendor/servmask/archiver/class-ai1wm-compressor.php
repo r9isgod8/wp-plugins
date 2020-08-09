@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2018 ServMask Inc.
+ * Copyright (C) 2014-2020 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,10 @@
  * ███████║███████╗██║  ██║ ╚████╔╝ ██║ ╚═╝ ██║██║  ██║███████║██║  ██╗
  * ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'Kangaroos cannot jump here' );
+}
 
 class Ai1wm_Compressor extends Ai1wm_Archiver {
 
@@ -158,23 +162,20 @@ class Ai1wm_Compressor extends Ai1wm_Archiver {
 	 * @param string $file_name     Filename to generate block header for
 	 * @param string $new_file_name Write the file with a different name
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	private function get_file_block( $file_name, $new_file_name = '' ) {
-		$block = false;
+		$block = '';
 
 		// Get stats about the file
 		if ( ( $stat = @stat( $file_name ) ) !== false ) {
 
-			// Get path details
-			if ( empty( $new_file_name ) ) {
-				$pathinfo = pathinfo( $file_name );
-			} else {
-				$pathinfo = pathinfo( $new_file_name );
-			}
-
 			// Filename of the file we are accessing
-			$name = $pathinfo['basename'];
+			if ( empty( $new_file_name ) ) {
+				$name = ai1wm_basename( $file_name );
+			} else {
+				$name = ai1wm_basename( $new_file_name );
+			}
 
 			// Size in bytes of the file
 			$size = $stat['size'];
@@ -183,7 +184,11 @@ class Ai1wm_Compressor extends Ai1wm_Archiver {
 			$date = $stat['mtime'];
 
 			// Replace current directory separator with backward slash in file path
-			$path = $this->replace_directory_separator_with_forward_slash( $pathinfo['dirname'] );
+			if ( empty( $new_file_name ) ) {
+				$path = $this->replace_directory_separator_with_forward_slash( ai1wm_dirname( $file_name ) );
+			} else {
+				$path = $this->replace_directory_separator_with_forward_slash( ai1wm_dirname( $new_file_name ) );
+			}
 
 			// Concatenate block format parts
 			$format = implode( '', $this->block_format );
@@ -203,7 +208,7 @@ class Ai1wm_Compressor extends Ai1wm_Archiver {
 	 * @return string
 	 */
 	public function get_file_size_block( $file_size ) {
-		$block = false;
+		$block = '';
 
 		// Pack file data into binary string
 		if ( isset( $this->block_format[1] ) ) {

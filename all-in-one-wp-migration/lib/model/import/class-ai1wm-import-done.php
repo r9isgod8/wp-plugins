@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2018 ServMask Inc.
+ * Copyright (C) 2014-2020 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,12 +23,17 @@
  * ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die( 'Kangaroos cannot jump here' );
+}
+
 class Ai1wm_Import_Done {
 
 	public static function execute( $params ) {
 
 		// Check multisite.json file
 		if ( true === is_file( ai1wm_multisite_path( $params ) ) ) {
+
 			// Read multisite.json file
 			$handle = ai1wm_open( ai1wm_multisite_path( $params ), 'r' );
 
@@ -46,29 +51,45 @@ class Ai1wm_Import_Done {
 
 			// Deactivate WordPress SSL plugins
 			if ( ! is_ssl() ) {
-				ai1wm_deactivate_plugins( array(
-					ai1wm_discover_plugin_basename( 'really-simple-ssl/rlrsssl-really-simple-ssl.php' ),
-					ai1wm_discover_plugin_basename( 'wordpress-https/wordpress-https.php' ),
-					ai1wm_discover_plugin_basename( 'wp-force-ssl/wp-force-ssl.php' ),
-				) );
+				ai1wm_deactivate_plugins(
+					array(
+						ai1wm_discover_plugin_basename( 'really-simple-ssl/rlrsssl-really-simple-ssl.php' ),
+						ai1wm_discover_plugin_basename( 'wordpress-https/wordpress-https.php' ),
+						ai1wm_discover_plugin_basename( 'wp-force-ssl/wp-force-ssl.php' ),
+						ai1wm_discover_plugin_basename( 'force-https-littlebizzy/force-https.php' ),
+					)
+				);
 			}
 
 			// Deactivate WordPress plugins
-			ai1wm_deactivate_plugins( array(
-				ai1wm_discover_plugin_basename( 'invisible-recaptcha/invisible-recaptcha.php' ),
-				ai1wm_discover_plugin_basename( 'wps-hide-login/wps-hide-login.php' ),
-				ai1wm_discover_plugin_basename( 'hide-my-wp/index.php' ),
-				ai1wm_discover_plugin_basename( 'hide-my-wordpress/index.php' ),
-				ai1wm_discover_plugin_basename( 'mycustomwidget/my_custom_widget.php' ),
-				ai1wm_discover_plugin_basename( 'lockdown-wp-admin/lockdown-wp-admin.php' ),
-				ai1wm_discover_plugin_basename( 'rename-wp-login/rename-wp-login.php' ),
-			) );
+			ai1wm_deactivate_plugins(
+				array(
+					ai1wm_discover_plugin_basename( 'invisible-recaptcha/invisible-recaptcha.php' ),
+					ai1wm_discover_plugin_basename( 'wps-hide-login/wps-hide-login.php' ),
+					ai1wm_discover_plugin_basename( 'hide-my-wp/index.php' ),
+					ai1wm_discover_plugin_basename( 'hide-my-wordpress/index.php' ),
+					ai1wm_discover_plugin_basename( 'mycustomwidget/my_custom_widget.php' ),
+					ai1wm_discover_plugin_basename( 'lockdown-wp-admin/lockdown-wp-admin.php' ),
+					ai1wm_discover_plugin_basename( 'rename-wp-login/rename-wp-login.php' ),
+					ai1wm_discover_plugin_basename( 'wp-simple-firewall/icwp-wpsf.php' ),
+					ai1wm_discover_plugin_basename( 'join-my-multisite/joinmymultisite.php' ),
+					ai1wm_discover_plugin_basename( 'multisite-clone-duplicator/multisite-clone-duplicator.php' ),
+					ai1wm_discover_plugin_basename( 'wordpress-mu-domain-mapping/domain_mapping.php' ),
+					ai1wm_discover_plugin_basename( 'pro-sites/pro-sites.php' ),
+				)
+			);
+
+			// Deactivate Revolution Slider
+			ai1wm_deactivate_revolution_slider( ai1wm_discover_plugin_basename( 'revslider/revslider.php' ) );
 
 			// Deactivate Jetpack modules
-			ai1wm_deactivate_jetpack_modules( array(
-				'photon',
-				'sso',
-			) );
+			ai1wm_deactivate_jetpack_modules( array( 'photon', 'sso' ) );
+
+			// Flush Elementor cache
+			ai1wm_elementor_cache_flush();
+
+			// Initial DB version
+			ai1wm_initial_db_version();
 
 		} else {
 
@@ -102,34 +123,51 @@ class Ai1wm_Import_Done {
 
 				// Deactivate WordPress SSL plugins
 				if ( ! is_ssl() ) {
-					ai1wm_deactivate_plugins( array(
-						ai1wm_discover_plugin_basename( 'really-simple-ssl/rlrsssl-really-simple-ssl.php' ),
-						ai1wm_discover_plugin_basename( 'wordpress-https/wordpress-https.php' ),
-						ai1wm_discover_plugin_basename( 'wp-force-ssl/wp-force-ssl.php' ),
-					) );
+					ai1wm_deactivate_plugins(
+						array(
+							ai1wm_discover_plugin_basename( 'really-simple-ssl/rlrsssl-really-simple-ssl.php' ),
+							ai1wm_discover_plugin_basename( 'wordpress-https/wordpress-https.php' ),
+							ai1wm_discover_plugin_basename( 'wp-force-ssl/wp-force-ssl.php' ),
+							ai1wm_discover_plugin_basename( 'force-https-littlebizzy/force-https.php' ),
+						)
+					);
 				}
 
 				// Deactivate WordPress plugins
-				ai1wm_deactivate_plugins( array(
-					ai1wm_discover_plugin_basename( 'invisible-recaptcha/invisible-recaptcha.php' ),
-					ai1wm_discover_plugin_basename( 'wps-hide-login/wps-hide-login.php' ),
-					ai1wm_discover_plugin_basename( 'hide-my-wp/index.php' ),
-					ai1wm_discover_plugin_basename( 'hide-my-wordpress/index.php' ),
-					ai1wm_discover_plugin_basename( 'mycustomwidget/my_custom_widget.php' ),
-					ai1wm_discover_plugin_basename( 'lockdown-wp-admin/lockdown-wp-admin.php' ),
-					ai1wm_discover_plugin_basename( 'rename-wp-login/rename-wp-login.php' ),
-				) );
+				ai1wm_deactivate_plugins(
+					array(
+						ai1wm_discover_plugin_basename( 'invisible-recaptcha/invisible-recaptcha.php' ),
+						ai1wm_discover_plugin_basename( 'wps-hide-login/wps-hide-login.php' ),
+						ai1wm_discover_plugin_basename( 'hide-my-wp/index.php' ),
+						ai1wm_discover_plugin_basename( 'hide-my-wordpress/index.php' ),
+						ai1wm_discover_plugin_basename( 'mycustomwidget/my_custom_widget.php' ),
+						ai1wm_discover_plugin_basename( 'lockdown-wp-admin/lockdown-wp-admin.php' ),
+						ai1wm_discover_plugin_basename( 'rename-wp-login/rename-wp-login.php' ),
+						ai1wm_discover_plugin_basename( 'wp-simple-firewall/icwp-wpsf.php' ),
+						ai1wm_discover_plugin_basename( 'join-my-multisite/joinmymultisite.php' ),
+						ai1wm_discover_plugin_basename( 'multisite-clone-duplicator/multisite-clone-duplicator.php' ),
+						ai1wm_discover_plugin_basename( 'wordpress-mu-domain-mapping/domain_mapping.php' ),
+						ai1wm_discover_plugin_basename( 'pro-sites/pro-sites.php' ),
+					)
+				);
+
+				// Deactivate Revolution Slider
+				ai1wm_deactivate_revolution_slider( ai1wm_discover_plugin_basename( 'revslider/revslider.php' ) );
 
 				// Deactivate Jetpack modules
-				ai1wm_deactivate_jetpack_modules( array(
-					'photon',
-					'sso',
-				) );
+				ai1wm_deactivate_jetpack_modules( array( 'photon', 'sso' ) );
+
+				// Flush Elementor cache
+				ai1wm_elementor_cache_flush();
+
+				// Initial DB version
+				ai1wm_initial_db_version();
 			}
 		}
 
 		// Check blogs.json file
 		if ( true === is_file( ai1wm_blogs_path( $params ) ) ) {
+
 			// Read blogs.json file
 			$handle = ai1wm_open( ai1wm_blogs_path( $params ), 'r' );
 
@@ -160,43 +198,58 @@ class Ai1wm_Import_Done {
 
 				// Deactivate WordPress SSL plugins
 				if ( ! is_ssl() ) {
-					ai1wm_deactivate_plugins( array(
-						ai1wm_discover_plugin_basename( 'really-simple-ssl/rlrsssl-really-simple-ssl.php' ),
-						ai1wm_discover_plugin_basename( 'wordpress-https/wordpress-https.php' ),
-						ai1wm_discover_plugin_basename( 'wp-force-ssl/wp-force-ssl.php' ),
-					) );
+					ai1wm_deactivate_plugins(
+						array(
+							ai1wm_discover_plugin_basename( 'really-simple-ssl/rlrsssl-really-simple-ssl.php' ),
+							ai1wm_discover_plugin_basename( 'wordpress-https/wordpress-https.php' ),
+							ai1wm_discover_plugin_basename( 'wp-force-ssl/wp-force-ssl.php' ),
+							ai1wm_discover_plugin_basename( 'force-https-littlebizzy/force-https.php' ),
+						)
+					);
 				}
 
 				// Deactivate WordPress plugins
-				ai1wm_deactivate_plugins( array(
-					ai1wm_discover_plugin_basename( 'invisible-recaptcha/invisible-recaptcha.php' ),
-					ai1wm_discover_plugin_basename( 'wps-hide-login/wps-hide-login.php' ),
-					ai1wm_discover_plugin_basename( 'hide-my-wp/index.php' ),
-					ai1wm_discover_plugin_basename( 'hide-my-wordpress/index.php' ),
-					ai1wm_discover_plugin_basename( 'mycustomwidget/my_custom_widget.php' ),
-					ai1wm_discover_plugin_basename( 'lockdown-wp-admin/lockdown-wp-admin.php' ),
-					ai1wm_discover_plugin_basename( 'rename-wp-login/rename-wp-login.php' ),
-				) );
+				ai1wm_deactivate_plugins(
+					array(
+						ai1wm_discover_plugin_basename( 'invisible-recaptcha/invisible-recaptcha.php' ),
+						ai1wm_discover_plugin_basename( 'wps-hide-login/wps-hide-login.php' ),
+						ai1wm_discover_plugin_basename( 'hide-my-wp/index.php' ),
+						ai1wm_discover_plugin_basename( 'hide-my-wordpress/index.php' ),
+						ai1wm_discover_plugin_basename( 'mycustomwidget/my_custom_widget.php' ),
+						ai1wm_discover_plugin_basename( 'lockdown-wp-admin/lockdown-wp-admin.php' ),
+						ai1wm_discover_plugin_basename( 'rename-wp-login/rename-wp-login.php' ),
+						ai1wm_discover_plugin_basename( 'wp-simple-firewall/icwp-wpsf.php' ),
+						ai1wm_discover_plugin_basename( 'join-my-multisite/joinmymultisite.php' ),
+						ai1wm_discover_plugin_basename( 'multisite-clone-duplicator/multisite-clone-duplicator.php' ),
+						ai1wm_discover_plugin_basename( 'wordpress-mu-domain-mapping/domain_mapping.php' ),
+						ai1wm_discover_plugin_basename( 'pro-sites/pro-sites.php' ),
+					)
+				);
+
+				// Deactivate Revolution Slider
+				ai1wm_deactivate_revolution_slider( ai1wm_discover_plugin_basename( 'revslider/revslider.php' ) );
 
 				// Deactivate Jetpack modules
-				ai1wm_deactivate_jetpack_modules( array(
-					'photon',
-					'sso',
-				) );
+				ai1wm_deactivate_jetpack_modules( array( 'photon', 'sso' ) );
+
+				// Flush Elementor cache
+				ai1wm_elementor_cache_flush();
+
+				// Initial DB version
+				ai1wm_initial_db_version();
 			}
 		}
 
 		// Set progress
 		Ai1wm_Status::done(
 			__(
-				'Your data has been imported successfully!',
+				'Your site has been imported successfully!',
 				AI1WM_PLUGIN_NAME
 			),
 			sprintf(
 				__(
-					'You need to perform two more steps:<br />' .
-					'<strong>1. You must save your permalinks structure twice. <a class="ai1wm-no-underline" href="%s" target="_blank">Permalinks Settings</a></strong> <small>(opens a new window)</small><br />' .
-					'<strong>2. <a class="ai1wm-no-underline" href="https://wordpress.org/support/view/plugin-reviews/all-in-one-wp-migration?rate=5#postform" target="_blank">Optionally, review the plugin</a>.</strong> <small>(opens a new window)</small>',
+					'» <a class="ai1wm-no-underline" href="%s" target="_blank">Save permalinks structure</a>.</strong> (opens a new window)<br />' .
+					'» <a class="ai1wm-no-underline" href="https://wordpress.org/support/view/plugin-reviews/all-in-one-wp-migration?rate=5#postform" target="_blank">Optionally, review the plugin</a>.</strong> (opens a new window)',
 					AI1WM_PLUGIN_NAME
 				),
 				admin_url( 'options-permalink.php#submit' )
